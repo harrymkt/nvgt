@@ -1,0 +1,6 @@
+totalwords:
+  one: "{{ . }} word total"
+  other: "{{ . }} words total"
+totaltime:
+  one: "{{ . }} minute read"
+  other: "{{ . }} minutes read"

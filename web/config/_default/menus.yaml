@@ -1,0 +1,23 @@
+# Sorted by weight. Lower weight appears at the top.
+main:
+  - name: Home
+    pageRef: /
+    weight: 1
+  - name: Documentation
+    pageRef: /docs
+    weight: 100
+  - name: Blog
+    pageRef: /blog
+    weight: 200
+  - name: Downloads
+    pageRef: /downloads
+    weight: 300
+  - name: Source Code on GitHub
+    url: https://github.com/samtupy/nvgt
+    weight: 400
+  - name: Community on Discord
+    url: https://discord.gg/pJjRBXDxzw
+    weight: 500
+  - name: Community Forum
+    url: https://forum.nvgt.gg
+    weight: 600

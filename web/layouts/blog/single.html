@@ -1,0 +1,16 @@
+{{- define "title" -}}
+{{- partial "title.html" (dict "titles" (slice .Title .FirstSection.Title) ) -}}
+{{- end -}}
+{{ define "main" }}
+<h1>{{ .Title }}</h1>
+{{- $upd := printf "Updated on <script>document.write(local_datetime_string(%q));</script>" .Lastmod }}
+{{- if ne .Lastmod .Date }}
+<p>{{ $upd | safeHTML }}</p>
+{{- end -}}
+{{- $pon := printf "Published on <script>document.write(local_datetime_string(%q));</script>" .Date }}
+<p>{{ $pon | safeHTML }}</p>
+<p>{{ T "totalwords" .WordCount }}</p>
+<p>{{ T "totaltime" .ReadingTime }}</p>
+<br>
+{{ .Content | safeHTML }}
+{{- end }}

@@ -9,7 +9,7 @@ import os
 import shutil
 
 html_base = "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"utf-8\">\n<title>{title}</title>\n</head>\n<body>\n{body}\n</body>\n</html>\n"
-liquid_base = "---\nlayout: default.liquid\ntitle: {title}\n---\n\n{body}"
+hugo_base = "---\ntitle: {title}\nurl: {url}\n---\n\n{body}"
 hhc_base = "<li><object type=\"text/sitemap\"><param name=\"Name\" value=\"{name}\"></object></li>\n"
 hhk_base = "<li><object type=\"text/sitemap\"><param name=\"Name\" value=\"{name}\"><param name=\"Local\" value=\"{path}\"></object></li>\n"
 md_nav_link = "[{text}]({url})"
@@ -251,11 +251,16 @@ def output_html_section(md_path, title):
 	md_path = md_path.lower()
 	with open(os.path.join("html", md_path), "w", encoding = "utf8") as f:
 		f.write(html_base.format(title = title, body = html_body))
-	# The NVGT website is built using cobalt (a tiny static site generator that uses liquid templates), and an html version of the docs are hosted on that website. We want this version of the docs to use the liquid layout that the static site uses, so we simply create very basic .liquid files in the nvgt repo's web directory, if that exists.
-	liquid_path = md_path[:-5] + ".liquid"
-	if os.path.isdir(os.path.join("..", "web", "src", "docs")):
-		with open(os.path.join("..", "web", "src", "docs", liquid_path), "w", encoding = "utf8") as f:
-			f.write(liquid_base.format(title = title, body = html_body.replace("{{", "\\{\\{").replace("}}", "\\}\\}")))
+	# The NVGT website is built using Hugo (a static site generator that uses Go templates), and an html version of the docs are hosted on that website. We want this version of the docs to use the Hugo layout that the static site uses, so we simply create very basic .md files for Hugo in the nvgt repo's web directory, if that exists.
+	hugo_path = md_path[:-5] + ".md"
+	if hugo_path == "index.md":
+		hugo_path = "_index.md"
+	hugo_url = f"docs/{md_path}"
+	if md_path == "index.html":
+		hugo_url = "docs"
+	if os.path.isdir(os.path.join("..", "web", "content", "docs")):
+		with open(os.path.join("..", "web", "content", "docs", hugo_path), "w", encoding = "utf8") as f:
+			f.write(hugo_base.format(title = title, url = hugo_url, body = html_body.replace("{{", "\\{\\{").replace("}}", "\\}\\}")))
 
 
 def main():
@@ -267,7 +272,7 @@ def main():
 	if not os.path.exists("md"): os.mkdir("md")
 	website_exists = False
 	if os.path.exists(os.path.join("..", "web")):
-		if not os.path.exists(os.path.join("..", "web", "src", "docs")): os.makedirs(os.path.join("..", "web", "src", "docs"))
+		if not os.path.exists(os.path.join("..", "web", "content", "docs")): os.makedirs(os.path.join("..", "web", "content", "docs"))
 		website_exists = True
 	txt_output = open("nvgt.txt", "w", encoding = "UTF8")
 	hhc_output = open("chm/nvgt.hhc", "w")
@@ -300,9 +305,9 @@ def main():
 			os.rename(os.path.join("chm", "nvgt.chm"), "nvgt.chm")
 			if website_exists: shutil.copy("nvgt.chm", os.path.join("..", "web", "src", "docs"))
 		if website_exists:
-			shutil.make_archive(os.path.join("..", "web", "src", "docs", "nvgt-html"), "zip", "html")
-			shutil.make_archive(os.path.join("..", "web", "src", "docs", "nvgt-markdown"), "zip", "md")
-			shutil.copy("nvgt.txt", os.path.join("..", "web", "src", "docs"))
+			shutil.make_archive(os.path.join("..", "web", "content", "docs", "nvgt-html"), "zip", "html")
+			shutil.make_archive(os.path.join("..", "web", "content", "docs", "nvgt-markdown"), "zip", "md")
+			shutil.copy("nvgt.txt", os.path.join("..", "web", "content", "docs"))
 
 if __name__ == "__main__":
 	main()

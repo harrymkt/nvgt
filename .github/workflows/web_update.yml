@@ -4,27 +4,37 @@ on:
   push:
     paths: ["doc/**", "web/**"]
     branches: ["main"]
+  pull_request:
+    paths: ["doc/**", "web/**"]
   workflow_dispatch:
+
+env:
+  HUGO_VERSION: 0.139.3
 
 jobs:
   web_update:
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v4
-    - name: build
-      run: |
-        cd doc
-        pip3 install -r requirements.txt
-        cd OSL
-        python3 make_osl_document.py
-        cd ..
-        python3 docgen.py
-        cd ..
-        curl -s -O https://nvgt.gg/ci/static/cobalt.exe
-        cd web
-        ../cobalt build
-        cd public_html
-        tar -czf ../../public_html.tar.gz *
-        cd ../..
-        curl -u "${{secrets.CIFTP}}" -s -T public_html.tar.gz ftp://nvgt.gg
-        curl -H "X-Auth: ${{secrets.CIPHP}}" -s https://nvgt.gg/ci/website_update.php
+      - uses: actions/checkout@v4
+      - name: Install Hugo
+        run: |
+          $url = "https://github.com/gohugoio/hugo/releases/download/v${{ env.HUGO_VERSION }}/hugo_extended_${{ env.HUGO_VERSION }}_windows-amd64.zip"
+          Invoke-WebRequest -Uri $url -OutFile "webtool.zip"
+          Expand-Archive webtool.zip -DestinationPath "webtool"
+          echo "$PWD\webtool" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
+
+      - name: build
+        run: |
+          cd doc
+          pip3 install -r requirements.txt
+          cd OSL
+          python3 make_osl_document.py
+          cd ..
+          python3 docgen.py
+          cd web
+          hugo
+          cd public_html
+          tar -czf ../../public_html.tar.gz *
+          cd ../..
+          curl -u "${{secrets.CIFTP}}" -s -T public_html.tar.gz ftp://nvgt.gg
+          curl -H "X-Auth: ${{secrets.CIPHP}}" -s https://nvgt.gg/ci/website_update.php
