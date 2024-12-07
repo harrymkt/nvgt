@@ -303,7 +303,7 @@ def main():
 		if os.path.isfile(os.path.join("chm", "nvgt.chm")):
 			if os.path.isfile("nvgt.chm"): os.remove("nvgt.chm")
 			os.rename(os.path.join("chm", "nvgt.chm"), "nvgt.chm")
-			if website_exists: shutil.copy("nvgt.chm", os.path.join("..", "web", "src", "docs"))
+			if website_exists: shutil.copy("nvgt.chm", os.path.join("..", "web", "content", "docs"))
 		if website_exists:
 			shutil.make_archive(os.path.join("..", "web", "content", "docs", "nvgt-html"), "zip", "html")
 			shutil.make_archive(os.path.join("..", "web", "content", "docs", "nvgt-markdown"), "zip", "md")

@@ -22,8 +22,7 @@ jobs:
           Invoke-WebRequest -Uri $url -OutFile "webtool.zip"
           Expand-Archive webtool.zip -DestinationPath "webtool"
           echo "$PWD\webtool" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
-
-      - name: build
+      - name: Build docs
         run: |
           cd doc
           pip3 install -r requirements.txt
@@ -31,10 +30,13 @@ jobs:
           python3 make_osl_document.py
           cd ..
           python3 docgen.py
-          cd ../web
+      - name: build
+        run: |
+          cd web
           hugo
           cd public_html
           tar -czf ../../public_html.tar.gz *
-          cd ../..
+      - name: Upload
+        run: |
           curl -u "${{secrets.CIFTP}}" -s -T public_html.tar.gz ftp://nvgt.gg
           curl -H "X-Auth: ${{secrets.CIPHP}}" -s https://nvgt.gg/ci/website_update.php
