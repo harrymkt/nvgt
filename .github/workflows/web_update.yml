@@ -31,7 +31,7 @@ jobs:
           python3 make_osl_document.py
           cd ..
           python3 docgen.py
-          cd web
+          cd ../web
           hugo
           cd public_html
           tar -czf ../../public_html.tar.gz *
