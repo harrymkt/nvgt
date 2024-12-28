@@ -1,7 +1,6 @@
 ---
 title: Home
 ---
-
 # Welcome to the homepage of the Nonvisual Gaming Toolkit!
 Create audiogames with ease.
 

@@ -251,10 +251,10 @@ def output_html_section(md_path, title):
 	md_path = md_path.lower()
 	with open(os.path.join("html", md_path), "w", encoding = "utf8") as f:
 		f.write(html_base.format(title = title, body = html_body))
-	# The NVGT website is built using Hugo (a static site generator that uses Go templates), and an html version of the docs are hosted on that website. We want this version of the docs to use the Hugo layout that the static site uses, so we simply create very basic .md files for Hugo in the nvgt repo's web directory, if that exists.
-	hugo_path = md_path[:-5] + ".md"
-	if hugo_path == "index.md":
-		hugo_path = "_index.md"
+	# The NVGT website is built using Hugo (a static site generator that uses Go templates), and an html version of the docs are hosted on that website. We want this version of the docs to use the Hugo layout that the static site uses, so we simply create .html files for Hugo in the nvgt repo's web directory, if that exists.
+	hugo_path = md_path
+	if hugo_path == "index.html":
+		hugo_path = "_index.html"
 	hugo_url = f"docs/{md_path}"
 	if md_path == "index.html":
 		hugo_url = "docs"

@@ -1,5 +1,9 @@
+{{- $searchon := false }}
+{{- if and (.Params.search | default true) }}
+{{- $searchon = true }}
+{{- end -}}
 <!DOCTYPE html>
-<html>
+<html lang="{{ site.Language.LanguageCode }}">
 <head>
 <meta charset="utf-8">
 <title>{{- block "title" . -}}{{ .Title }} - {{ site.Title }}{{- end -}}</title>
@@ -16,17 +20,24 @@ display: inline;
 <script src = "{{ absURL "scripts/functions.js" }}"></script>
 </head>
 <body>
-<a href="#content-anchor">Skip to content</a>
+<p><a href="#content-anchor">Skip to content</a></p>
+<link href="{{ absURL "pagefind/pagefind-ui.css" }}" rel="stylesheet">
+<script src="{{ absURL "pagefind/pagefind-ui.js" }}"></script>
+<div id="sitesearch"></div>
 {{- partial "menu.html" (dict "menuID" "main" "page" .) }}
-<main>
-<div id="content-anchor">
+<main id="content-anchor"{{ if $searchon }} data-pagefind-body{{ end }}>
+<div id="">
 {{- block "main" . }}
 {{- end -}}
-</div>
 </main>
 <footer><div id="footer">
 &copy; 2022&ndash;{{ now | dateFormat "2006" }}<a href="https://samtupy.com">Sam Tupy Productions</a>
 </div></footer>
 <script src = "{{ absURL "scripts/copy.js" }}"></script>
+<script>
+window.addEventListener('DOMContentLoaded', (event) => {
+  new PagefindUI({ element: "#sitesearch", showSubResults: true });
+});
+</script>
 </body>
 </html>

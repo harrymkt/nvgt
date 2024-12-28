@@ -9,32 +9,38 @@ on:
   workflow_dispatch:
 
 env:
-  HUGO_VERSION: 0.139.3
+  HUGO_VERSION: 0.140.1
 
 jobs:
   web_update:
-    runs-on: windows-2022
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
       - name: Install Hugo
         run: |
-          $url = "https://github.com/gohugoio/hugo/releases/download/v${{ env.HUGO_VERSION }}/hugo_extended_${{ env.HUGO_VERSION }}_windows-amd64.zip"
-          Invoke-WebRequest -Uri $url -OutFile "webtool.zip"
-          Expand-Archive webtool.zip -DestinationPath "webtool"
-          echo "$PWD\webtool" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8
+          wget -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb \
+          && sudo dpkg -i ${{ runner.temp }}/hugo.deb          
       - name: Build docs
         run: |
           cd doc
           pip3 install -r requirements.txt
           cd OSL
-          python3 make_osl_document.py
+          python make_osl_document.py
           cd ..
-          python3 docgen.py
+          python docgen.py
       - name: build
         run: |
           cd web
           hugo
-          cd public_html
+      - name: Install Python Requirements to Generate Search
+        run: pip install pagefind[extended]
+      - name: Generate Pagefind Search
+        run: python -m pagefind --site web/public_html
+      - name: Zip
+        run: |
+          cd web/public_html
           tar -czf ../../public_html.tar.gz *
       - name: Upload
         run: |
