@@ -3,3 +3,4 @@ publishDir: public_html
 baseURL: https://nvgt.gg
 title: The Nonvisual Gaming Toolkit
 description: website for the NonVisual Gaming Toolkit (nvgt) audiogame creation engine
+disableKinds: [taxonomy]

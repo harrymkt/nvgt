@@ -20,7 +20,7 @@ All three releases support cross-compilation; this means you can very easily com
 
 For example:
 
-```
+```nvgt
 #pragma platform windows
 //or
 #pragma platform mac
@@ -37,7 +37,7 @@ The new versions also support assigning of the returned http response to an http
 
 Example:
 
-```
+```nvgt
 void main(){
     http_response r;
     url_get("https://samtupy.com", r);
@@ -70,7 +70,7 @@ Sometimes users are having issues getting the official mac build of NVGT to run.
 * If your mac claims that the app bundle is damaged, try running the following in the terminal: `xattr -c /applications/NVGT.app`
 * If you get an error in a problem report about libgit2.2.17.dylib or something being missing, run `brew install libgit2`
 * Currently we are having issues detecting the builtin includes directory. It will only be a few lines of code to fix, but we haven't gotten to it yet. To run your nvgt code, the recommendation currently is the following (to be improved) command:
-```
+```text
 /applications/nvgt.app/MacOS/nvgt `pwd`/scriptname.nvgt  -I/applications/nvgt.app/Contents/Resources/include
 ```
 ### Windows executable won't run
